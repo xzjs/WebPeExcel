@@ -18,7 +18,7 @@ public partial class _Default : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
-        string saveDir = @"\Uploads\";
+        string saveDir = @"Uploads\";
 
         string appPath = Request.PhysicalApplicationPath;
 
@@ -34,20 +34,23 @@ public partial class _Default : System.Web.UI.Page
         {
             Label1.Text = "You did not specify a file to upload.";
         }
+
+        excelInsertDataForInsert(GetExcelFileData(savePath));
+        Label1.Text = "导入" + FileUpload1.FileName + "成功";
     }
 
     public static DataTable GetExcelFileData(string filePath)
     {
         OleDbDataAdapter oleAdp = new OleDbDataAdapter();
         OleDbConnection oleCon = new OleDbConnection();
-        string strCon = "Provider=Microsoft.Jet.oleDb.4.0;data source=" + filePath + ";Extended Properties='Excel 8.0;HDR=Yes;IMEX=1'";
+        string strCon = @"Provider=Microsoft.ACE.OLEDB.12.0;data source=" + filePath + ";Extended Properties='Excel 12.0;HDR=YES;IMEX=1'";
         try
         {
             DataTable dt = new DataTable();
             oleCon.ConnectionString = strCon;
             oleCon.Open();
-            DataTable table = oleCon.GetOleDbSchemaTable(OleDbSchemaGuid.Tables, null);
-            string sheetName = table.Rows[0][2].ToString();
+            DataTable table = oleCon.GetOleDbSchemaTable(OleDbSchemaGuid.Tables,null);
+            string sheetName = table.Rows[1][2].ToString();
             string sqlStr = "Select * From [" + sheetName + "]";
             oleAdp = new OleDbDataAdapter(sqlStr, oleCon);
             oleAdp.Fill(dt);
@@ -65,7 +68,7 @@ public partial class _Default : System.Web.UI.Page
         }
     }
 
-    public static void excelInsertDataForInsert(DataTable dtExcel, string UserName)
+    public static void excelInsertDataForInsert(DataTable dtExcel)
     {
         using (WPEDataContext db = new WPEDataContext())
         {
@@ -91,22 +94,22 @@ public partial class _Default : System.Web.UI.Page
             List<Total> listEntity = new List<Total>();
             foreach (var q in query)
             {
-                MAUCPO Entity = new MAUCPO();
-                Entity.CREATE_t = DateTime.Now;
-                Entity.CreateBy = UserName;
-                Entity.PN = q.PN;
-                Entity.PONo = q.PONo;
-                Entity.POPGI_T = DateTime.Parse(q.POPGI_T);
-                Entity.Price = decimal.Parse(q.Price);
-                Entity.Priority = int.Parse(listPN_Lavel[q.PN]);
-                Entity.ProcessFlag = 'N';
-                Entity.QTY = int.Parse(q.QTY);
+                Total Entity=new Total();
+                Entity.Grade=Convert.ToInt32(q.Grade);
+                Entity.Num=q.Num;
+                Entity.Name=q.Name;
+                Entity.Sex=q.Sex;
+                Entity.College=q.College;
+                Entity.Department=q.Department;
+                Entity.Major=q.Major;
+                Entity.ClassNum=q.ClassNum;
+                Entity.Nation=q.Nation;
+                Entity.Address=q.Address;
+                Entity.IDNO=q.IDNO;
                 listEntity.Add(Entity);
             }
-            db.MAUCPO.InsertAllOnSubmit(listEntity);
+            db.Total.InsertAllOnSubmit(listEntity);
             db.SubmitChanges();
-
-            4FUBXLFHFT323WV6CF
         }
     }
 }

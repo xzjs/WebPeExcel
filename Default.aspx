@@ -13,7 +13,7 @@
     
         <asp:FileUpload ID="FileUpload1" runat="server" />
         <br />
-        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />
+        <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="上传文件" />
         <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
     
     </div>
